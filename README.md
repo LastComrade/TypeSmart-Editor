@@ -4,6 +4,12 @@ TypeSmart is a full-stack, real-time intelligent suggestion editor inspired by S
 
 ---
 
+## 🖥️ Demo
+
+![Demo](/typeSmart.gif)
+
+---
+
 ## 🚀 Features
 
 - ✅ Smart floating suggestion panel
