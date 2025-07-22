@@ -4,6 +4,7 @@ import StarterKit from "@tiptap/starter-kit";
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Editor = () => {
     const [currentWord, setCurrentWord] = useState('');
@@ -51,7 +52,7 @@ const Editor = () => {
         debounce(async (word) => {
             try {
                 console.debug('Fetching suggestions for:', word);
-                const response = await axios.get(`http://localhost:8080/suggestion-service/api/suggestions`, {
+                const response = await axios.get(`${API_BASE_URL}/suggestion-service/api/suggestions`, {
                     params: { word }
                 });
                 const result = response.data?.suggestions || [];
