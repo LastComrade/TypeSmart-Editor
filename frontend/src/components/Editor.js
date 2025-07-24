@@ -4,9 +4,9 @@ import StarterKit from "@tiptap/starter-kit";
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const Editor = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const [currentWord, setCurrentWord] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -22,7 +22,6 @@ const Editor = () => {
             const editorDOM = editor?.view?.dom;
 
             setCurrentWord(lastWord);
-            console.debug('Current word detected:', lastWord);
 
             if (lastWord.length > 1) {
                 const position = editor.state.selection.from;
@@ -36,14 +35,12 @@ const Editor = () => {
                     };
 
                     setCoords(newCoords);
-                    console.debug('Suggestion popup position calculated:', newCoords);
 
                     fetchSuggestions(lastWord);
                     setSelectedIndex(0);
                 }
             } else {
                 setShowSuggestions(false);
-                console.debug('Suggestion box hidden - word too short');
             }
         }
     });
@@ -51,16 +48,13 @@ const Editor = () => {
     const fetchSuggestions = useCallback(
         debounce(async (word) => {
             try {
-                console.debug('Fetching suggestions for:', word);
                 const response = await axios.get(`${API_BASE_URL}/suggestion-service/api/suggestions`, {
                     params: { word }
                 });
                 const result = response.data?.suggestions || [];
-                console.debug('Fetched suggestions:', result);
                 setSuggestions(result);
                 setShowSuggestions(true);
             } catch (err) {
-                console.error("Failed to fetch suggestions:", err);
                 setSuggestions([]);
                 setShowSuggestions(false);
             }
@@ -101,11 +95,9 @@ const Editor = () => {
                                     }
                                 )}
                                 onMouseEnter={() => {
-                                    console.debug('Hovered on suggestion:', s, 'Index:', i);
                                     setSelectedIndex(i);
                                 }}
                                 onClick={() => {
-                                    console.debug('Selected suggestion:', s);
                                     const newText = editor
                                         .getText()
                                         .trim()
