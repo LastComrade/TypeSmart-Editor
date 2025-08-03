@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.8.6-openjdk-17'
+            image 'maven:3.9.6-eclipse-temurin-17'
             args '-v /root/.m2:/root/.m2'
         }
     }
@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('clone') {
             steps {
-                echo "Clonning branch: ${env.BRANCH_NAME}"
+                echo "Cloning branch: ${env.BRANCH_NAME}"
                 checkout scm
             }
         }
