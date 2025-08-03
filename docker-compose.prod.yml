@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  suggestion-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  frontend:
+    build:
+      args:
+        REACT_APP_ENV: prod
