@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         PROJECT_NAME = 'typesmart-editor'
+        BRANCH_NAME = "${env.GIT_BRANCH ? env.GIT_BRANCH.replaceFirst(/^origin\//, '') : 'dev'}"
     }
 
     stages {
@@ -31,7 +32,8 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 script {
-                    def composeFile = "docker-compose.${env.BRANCH_NAME}.yml"
+                    def branch = env.BRANCH_NAME
+                    def composeFile = "docker-compose.${branch}.yml"
                     def exists = fileExists(composeFile)
 
                     if (!exists) {
