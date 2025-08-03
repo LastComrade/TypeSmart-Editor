@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_NAME = 'typesmart-editor'
+    }
+
+    stages {
+        stage('clone') {
+            steps {
+                echo "Clonning branch: ${env.BRANCH_NAME}"
+                checkout scm
+            }
+        }
+
+        stage('Run Unit tests') {
+            steps {
+                dir('suggestion-service') {
+                    echo "Running unit tests for suggestion-service"
+                    sh 'mvn test'
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    def composeFile = "docker-compose.${env.BRANCH_NAME}.yml"
+                    def exists = fileExists(composeFile)
+
+                    if (!exists) {
+                        error "No compose file found for branch: ${env.BRANCH_NAME}"
+                    }
+
+                    echo "Building for environment: ${env.BRANCH_NAME}"
+
+                    sh """
+                        docker-compose -f docker-compose.yml -f ${composeFile} down || true
+                        docker-compose -f docker-compose.yml -f ${composeFile} build
+                        docker-compose -f docker-compose.yml -f ${composeFile} up -d
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "CI/CD pipeline completed successfully for branch: ${env.BRANCH_NAME}"
+        }
+
+        failure {
+            echo "CI/CD pipeline failed for branch: ${env.BRANCH_NAME}"
+        }
+    }
+}
