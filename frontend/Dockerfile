@@ -4,13 +4,14 @@ FROM node:18-alpine as build
 ARG REACT_APP_API_BASE_URL
 ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
 
-ARG REACT_APP_ENV
+ARG REACT_APP_LOG_LEVEL
+ENV REACT_APP_LOG_LEVEL=$REACT_APP_LOG_LEVEL
 
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build:$REACT_APP_ENV
+RUN npm run build
 
 # For running the server with the static HTML files
 FROM nginx:alpine

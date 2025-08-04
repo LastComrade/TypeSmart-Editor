@@ -8,4 +8,4 @@ services:
   frontend:
     build:
       args:
-        REACT_APP_ENV: prod
+        REACT_APP_LOG_LEVEL: silent

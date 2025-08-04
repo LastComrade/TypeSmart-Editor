@@ -8,4 +8,4 @@ services:
   frontend:
     build:
       args:
-        REACT_APP_ENV: dev
+        REACT_APP_LOG_LEVEL: debug
