@@ -1,27 +1,28 @@
 # Dockerfile.jenkins-agent
 FROM maven:3.9.6-eclipse-temurin-17
 
-# Install required packages and Docker CLI
-RUN apt-get update && \
-    apt-get install -y \
-        curl \
-        gnupg \
-        lsb-release \
-        software-properties-common \
-        unzip \
-        git \
-        ca-certificates && \
+LABEL maintainer="konark"
+
+# Install dependencies and Docker CLI
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    lsb-release \
+    software-properties-common \
+    unzip \
+    git \
+    ca-certificates && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
     apt-get update && \
     apt-get install -y docker-ce-cli && \
     apt-get clean
 
-# Installing docker-compose
-RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" \
-     -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose && \
-    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+# Install Docker Compose v2 (as CLI plugin)
+RUN mkdir -p ~/.docker/cli-plugins && \
+    curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+    -o ~/.docker/cli-plugins/docker-compose && \
+    chmod +x ~/.docker/cli-plugins/docker-compose
 
-# Verify versions
-RUN docker --version && docker-compose --version && git --version
+# Set plugin path for Compose v2
+ENV PATH="/root/.docker/cli-plugins:${PATH}"
